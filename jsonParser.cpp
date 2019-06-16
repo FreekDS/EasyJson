@@ -162,11 +162,15 @@ JsonValue::~JsonValue()
 
 void JsonValue::addToArray(JsonValue* value)
 {
+    if(!isArray())
+        throw std::invalid_argument("Object is not of type JsonArray");
     array_value->push_back(value);
 }
 
 void JsonValue::addToObject(JsonValue* value, const std::string& key)
 {
+    if(!isObject())
+        throw std::invalid_argument("Object is not of type JsonObject");
     if (object_value->count(key)) {
         throw std::invalid_argument("Duplicate key: '"+key+"'");
     }
@@ -214,14 +218,6 @@ JsonValue::JsonValue(const ValueType& vt)
     }
 }
 
-void JsonValue::clear()
-{
-
-}
-
-//JsonValue::JsonValue(const JsonValue& other)
-//{
-//}
 
 JsonValue& JsonValue::operator=(const JsonValue& other)
 {
@@ -657,11 +653,6 @@ bool JsonParser::expectChar(std::string& line, char c)
     return false;
 }
 
-void JsonParser::removeAllWhiteSpaces(std::string& line)
-{
-    line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
-}
-
 JsonParser::JsonParser()
         :parseState(), currentLine(0), m_curlyCount(0), m_straightCount(0)
 {
@@ -675,10 +666,6 @@ JsonValue& JsonParser::operator[](const std::string& key)
     return *(root[key]);
 }
 
-bool JsonParser::expectBoolVal(std::string& line)
-{
-    return false;
-}
 
 std::string JsonParser::readNumberValue(std::string& line)
 {
@@ -721,7 +708,8 @@ void JsonParser::clear()
     root.clear();
 }
 
-const char* ParseError::what() const noexcept
+JsonParser::JsonParser(const std::string& file_name) : JsonParser()
 {
-    return message.c_str();
+    parse(file_name);
 }
+
