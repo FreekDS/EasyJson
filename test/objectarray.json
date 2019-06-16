@@ -1,0 +1,14 @@
+{
+  "array": [
+    {
+      "name": "object1",
+      "id": 1
+    },
+    {
+      "name": "object2",
+      "id": 3,
+      "dead": true
+    }
+  ],
+  "nepper": true
+}
