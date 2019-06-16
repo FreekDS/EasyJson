@@ -7,7 +7,12 @@
 
 bool JsonValue::isBool() const
 {
-    return type==ValueType::JSON_BOOL;
+    bool numeric_bool = false;
+    if(type==ValueType::JSON_NUM){
+        if(number_value == 0 || number_value == 1)
+            numeric_bool = true;
+    }
+    return type==ValueType::JSON_BOOL || numeric_bool;
 }
 
 bool JsonValue::isNull() const
@@ -37,15 +42,14 @@ bool JsonValue::isNumber() const
 
 bool JsonValue::getBoolValue() const
 {
-    if (!isBool()) {
         if (isNumber()) {
             if (number_value==0)
                 return false;
-            if (number_value==1)
+            else if (number_value==1)
                 return true;
+            else
+                throw std::invalid_argument("Unexpected value for JsonBool");
         }
-        throw std::invalid_argument("Invalid type for: bool");
-    }
     return bool_value;
 }
 

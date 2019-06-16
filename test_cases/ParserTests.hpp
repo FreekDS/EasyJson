@@ -1,0 +1,6 @@
+#ifndef JSONPARSER_PARSERTESTS_HPP
+#define JSONPARSER_PARSERTESTS_HPP
+
+#include "basics/ValueTypeTests.h"
+
+#endif //JSONPARSER_PARSERTESTS_HPP
