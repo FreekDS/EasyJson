@@ -397,11 +397,104 @@ TEST_F(ValueTests, ArrayInvalidAccessMethods) // NOLINT(cert-err58-cpp)
     }
     MY_CATCH("Index out of range, got [30], max is [2]", std::invalid_argument);
 
+    try{
+        auto val = JsonValue(ValueType::JSON_NULL);
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_NULL, "null");
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_STRING);
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_STRING, "string");
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_OBJ);
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_OBJ, "object");
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_NUM, "3");
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_BOOL, "true");
+        val[0];
+    }
+    MY_CATCH("Object is not of type JsonArray", std::invalid_argument);
 }
 
 TEST_F(ValueTests, ArrayValueInvalid)  // NOLINT(cert-err58-cpp)
 {
+    try{
+        auto val = JsonValue(ValueType::JSON_NULL);
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
 
+    try{
+        auto val = JsonValue(ValueType::JSON_NULL, "null");
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_STRING);
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_STRING, "string");
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_OBJ);
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_OBJ, "object");
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_NUM, "1");
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
+
+    try{
+        auto val = JsonValue(ValueType::JSON_BOOL, "true");
+        val.getArrayValue();
+    }
+    MY_CATCH("Invalid type for: JsonArray", std::invalid_argument);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
