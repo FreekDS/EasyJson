@@ -50,7 +50,7 @@ bool JsonValue::getBoolValue() const
         else
             throw std::invalid_argument("Unexpected value for JsonBool");
     }
-    if(isBool())
+    if (isBool())
         return bool_value;
     else
         throw std::invalid_argument("Unexpected value for JsonBool");
@@ -190,10 +190,15 @@ JsonValue& JsonValue::operator[](int index)
         throw std::invalid_argument("Object is not of type JsonArray");
     }
 
-    if (index>=array_value->size())
-        throw std::invalid_argument(
-                "Index out of range, got ["+std::to_string(index)+"], max is ["+std::to_string(array_value->size()-1)
-                        +"]");
+    if (index>=array_value->size() || index<0) {
+        if (!array_value->empty())
+            throw std::invalid_argument(
+                    "Index out of range, got ["+std::to_string(index)+"], max is ["
+                            +std::to_string(array_value->size()-1)
+                            +"]");
+        else
+            throw std::invalid_argument("Index out of range, got ["+std::to_string(index)+"], but JsonArray is empty");
+    }
 
     return *((*array_value)[index]);
 }
