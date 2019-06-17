@@ -4,25 +4,34 @@
 #include <iostream>
 #include "../BaseTest.h"
 
+//Constructors/////////////////////////////////////////////////////////////////////////////////
+
 TEST_F(ValueTests, Constructors) // NOLINT(cert-err58-cpp)
 {
-
-    EXPECT_NO_THROW(auto val1 = JsonValue(););
-
     // Should throw exceptions
     try {
-        auto val2 = JsonValue(ValueType::JSON_NULL);
-        auto val3 = JsonValue(ValueType::JSON_BOOL);
-        auto val4 = JsonValue(ValueType::JSON_NUM);
-        auto val5 = JsonValue(ValueType::JSON_STRING);
+        auto val = JsonValue(ValueType::JSON_BOOL);
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Cannot create empty JSON Value", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM);
         FAIL() << "Expected std::invalid_argument";
     }
     MY_CATCH("Cannot create empty JSON Value", std::invalid_argument);
 
     // Should not throw exceptions
-    EXPECT_NO_THROW(auto val6 = JsonValue(ValueType::JSON_OBJ););
-    EXPECT_NO_THROW(auto val7 = JsonValue(ValueType::JSON_ARRAY););
+    EXPECT_NO_THROW(auto val = JsonValue(););
+    EXPECT_NO_THROW(auto val = JsonValue(ValueType::JSON_NULL););
+    EXPECT_NO_THROW(auto val = JsonValue(ValueType::JSON_STRING););
+    EXPECT_NO_THROW(auto val = JsonValue(ValueType::JSON_OBJ););
+    EXPECT_NO_THROW(auto val = JsonValue(ValueType::JSON_ARRAY););
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//Boolean Value////////////////////////////////////////////////////////////////////////////////
 
 TEST_F(ValueTests, BoolValueValid) // NOLINT(cert-err58-cpp)
 {
@@ -56,13 +65,133 @@ TEST_F(ValueTests, BoolValueValid) // NOLINT(cert-err58-cpp)
 TEST_F(ValueTests, BoolValueInvalid) // NOLINT(cert-err58-cpp)
 {
     try {
-        auto val1 = JsonValue();
-
-
-        FAIL() << "Expected invalid_argument";
+        auto val = JsonValue(ValueType::JSON_BOOL, "3");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
     }
-    catch (...){}
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_BOOL, "-1");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM, "3");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM, "-1");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NULL, "null");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_STRING, "string");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_ARRAY, "array");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_BOOL, "string");
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_ARRAY);
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_OBJ);
+        val.getBoolValue();
+        FAIL() << "Expected invalid argument error";
+    }
+    MY_CATCH("Unexpected value for JsonBool", std::invalid_argument);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//String Value/////////////////////////////////////////////////////////////////////////////////
+
+TEST_F(ValueTests, StringValueValid)  // NOLINT(cert-err58-cpp)
+{
 
 }
+
+TEST_F(ValueTests, StringValueInvalid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//Number Value////////////////////////////////////////////////////////////////////////////////
+
+TEST_F(ValueTests, NumberValueValid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+TEST_F(ValueTests, NumberValueInvalid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//Array Value//////////////////////////////////////////////////////////////////////////////////
+
+TEST_F(ValueTests, ArrayValueValid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+TEST_F(ValueTests, ArrayValueInvalid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//Object Value/////////////////////////////////////////////////////////////////////////////////
+
+TEST_F(ValueTests, ObjectValueValid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+TEST_F(ValueTests, ObjectValueInvalid)  // NOLINT(cert-err58-cpp)
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 
 #endif //JSONPARSER_VALUETYPETESTS_H

@@ -8,8 +8,8 @@
 bool JsonValue::isBool() const
 {
     bool numeric_bool = false;
-    if(type==ValueType::JSON_NUM){
-        if(number_value == 0 || number_value == 1)
+    if (type==ValueType::JSON_NUM) {
+        if (number_value==0 || number_value==1)
             numeric_bool = true;
     }
     return type==ValueType::JSON_BOOL || numeric_bool;
@@ -42,15 +42,18 @@ bool JsonValue::isNumber() const
 
 bool JsonValue::getBoolValue() const
 {
-        if (isNumber()) {
-            if (number_value==0)
-                return false;
-            else if (number_value==1)
-                return true;
-            else
-                throw std::invalid_argument("Unexpected value for JsonBool");
-        }
-    return bool_value;
+    if (isNumber()) {
+        if (number_value==0)
+            return false;
+        else if (number_value==1)
+            return true;
+        else
+            throw std::invalid_argument("Unexpected value for JsonBool");
+    }
+    if(isBool())
+        return bool_value;
+    else
+        throw std::invalid_argument("Unexpected value for JsonBool");
 }
 
 double JsonValue::getNumberValue() const
@@ -166,14 +169,14 @@ JsonValue::~JsonValue()
 
 void JsonValue::addToArray(JsonValue* value)
 {
-    if(!isArray())
+    if (!isArray())
         throw std::invalid_argument("Object is not of type JsonArray");
     array_value->push_back(value);
 }
 
 void JsonValue::addToObject(JsonValue* value, const std::string& key)
 {
-    if(!isObject())
+    if (!isObject())
         throw std::invalid_argument("Object is not of type JsonObject");
     if (object_value->count(key)) {
         throw std::invalid_argument("Duplicate key: '"+key+"'");
@@ -217,11 +220,17 @@ JsonValue::JsonValue(const ValueType& vt)
         object_value = new JsonObject{};
         type = vt;
         break;
+    case JSON_NULL:
+        type = vt;
+        break;
+    case JSON_STRING:
+        string_value = new std::string("");
+        type = vt;
+        break;
     default:
         throw std::invalid_argument("Cannot create empty JSON Value");
     }
 }
-
 
 JsonValue& JsonValue::operator=(const JsonValue& other)
 {
@@ -328,7 +337,7 @@ void JsonParser::parse(const std::string& file_name)
 
                 if (parseState.top()==ARRAY) {
                     if (!unfinishedObjects.empty()) {
-                        line.erase(0,1);
+                        line.erase(0, 1);
                         auto top = unfinishedObjects.top();
                         unfinishedObjects.pop();
                         auto array = unfinishedArrays.top().second;
@@ -363,7 +372,7 @@ void JsonParser::parse(const std::string& file_name)
                 // end array
                 m_straightCount--;
                 if (parseState.top()==ARRAY) {
-                    line.erase(0,1);
+                    line.erase(0, 1);
                     auto top = unfinishedArrays.top();
                     parseState.pop();
                     unfinishedArrays.pop();
@@ -565,7 +574,7 @@ void JsonParser::parse(const std::string& file_name)
                     break;
                 }
                 default: {
-                    if (isdigit(new_current)) {
+                    if (isdigit(new_current) || new_current=='-') {
                         std::string value = readNumberValue(line);
                         skipWhiteSpace(line);
                         if (!line.empty() && line.front()!=',' && line.front()!=' ' && line.front()!='\n') {
@@ -598,7 +607,7 @@ void JsonParser::parse(const std::string& file_name)
             }
             default:
                 if (parseState.top()==ARRAY) {
-                    if (isdigit(current)) {
+                    if (isdigit(current) || current=='-') {
                         std::string value = readNumberValue(line);
                         skipWhiteSpace(line);
                         JsonValue* jsonVal = new JsonValue(ValueType::JSON_NUM, value);
@@ -670,10 +679,10 @@ JsonValue& JsonParser::operator[](const std::string& key)
     return *(root[key]);
 }
 
-
 std::string JsonParser::readNumberValue(std::string& line)
 {
     bool readDot = false;
+    bool readMin = false;
     auto valid = [&](std::string& line) {
         if (line.front()=='.') {
             if (!readDot) {
@@ -683,7 +692,15 @@ std::string JsonParser::readNumberValue(std::string& line)
                 throw ParseError(currentLine, line, "Incorrect number format");
             }
         }
-        return isdigit(line.front()) || line.front()=='.';
+        if (line.front()=='-') {
+            if (!readMin) {
+                readMin = true;
+            }
+            else {
+                throw ParseError(currentLine, line, "Incorrect number format");
+            }
+        }
+        return isdigit(line.front()) || line.front()=='.' || line.front()=='-';
     };
 
     std::string result;
@@ -712,7 +729,8 @@ void JsonParser::clear()
     root.clear();
 }
 
-JsonParser::JsonParser(const std::string& file_name) : JsonParser()
+JsonParser::JsonParser(const std::string& file_name)
+        :JsonParser()
 {
     parse(file_name);
 }
