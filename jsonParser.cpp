@@ -59,14 +59,14 @@ bool JsonValue::getBoolValue() const
 double JsonValue::getNumberValue() const
 {
     if (!isNumber())
-        throw std::invalid_argument("Invalid type for: number");
+        throw std::invalid_argument("Invalid type for: JsonNumber");
     return number_value;
 }
 
 std::string JsonValue::getStringValue() const
 {
     if (!isString())
-        throw std::invalid_argument("Invalid type for: string");
+        throw std::invalid_argument("Invalid type for: JsonString");
     return *string_value;
 }
 

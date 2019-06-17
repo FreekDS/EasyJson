@@ -8,7 +8,7 @@
 catch(std::invalid_argument& e) { \
     EXPECT_STREQ(e.what(), expected); \
 }catch(...){ \
-    FAIL() << "Expected" << #exceptionType; \
+    FAIL() << "Expected " << #exceptionType; \
 }
 
 struct ParserTests : public ::testing::Test {

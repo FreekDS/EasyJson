@@ -141,11 +141,79 @@ TEST_F(ValueTests, BoolValueInvalid) // NOLINT(cert-err58-cpp)
 
 TEST_F(ValueTests, StringValueValid)  // NOLINT(cert-err58-cpp)
 {
-
+    auto val1 = JsonValue(ValueType::JSON_STRING, "varkentje");
+    ASSERT_FALSE(val1.getStringValue().empty());
+    EXPECT_STREQ(val1.getStringValue().c_str(), "varkentje");
+    auto val2 = JsonValue(ValueType::JSON_STRING, "");
+    EXPECT_TRUE(val2.getStringValue().empty());
+    auto val3 = JsonValue(ValueType::JSON_STRING);
+    EXPECT_TRUE(val2.getStringValue().empty());
 }
 
 TEST_F(ValueTests, StringValueInvalid)  // NOLINT(cert-err58-cpp)
 {
+    try {
+        auto val = JsonValue(ValueType::JSON_OBJ, "");
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_OBJ);
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM, "-1");
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NULL);
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NULL, "-1");
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM, "1");
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_ARRAY);
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_ARRAY, "");
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_BOOL, "true");
+        val.getStringValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonString", std::invalid_argument);
 
 }
 
@@ -155,12 +223,103 @@ TEST_F(ValueTests, StringValueInvalid)  // NOLINT(cert-err58-cpp)
 
 TEST_F(ValueTests, NumberValueValid)  // NOLINT(cert-err58-cpp)
 {
-
+    auto val1 = JsonValue(ValueType::JSON_NUM, "1");
+    EXPECT_EQ(val1.getNumberValue(), 1);
+    auto val2 = JsonValue(ValueType::JSON_NUM, "1.0");
+    EXPECT_EQ(val2.getNumberValue(), 1.0);
+    auto val3 = JsonValue(ValueType::JSON_NUM, "2.578");
+    EXPECT_EQ(val3.getNumberValue(), 2.578);
+    auto val4 = JsonValue(ValueType::JSON_NUM, "-5");
+    EXPECT_EQ(val4.getNumberValue(), -5);
+    auto val5 = JsonValue(ValueType::JSON_NUM, "-3.201");
+    EXPECT_EQ(val5.getNumberValue(), -3.201);
 }
 
 TEST_F(ValueTests, NumberValueInvalid)  // NOLINT(cert-err58-cpp)
 {
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM, "");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument (stod)";
+    }
+    MY_CATCH("stod", std::invalid_argument);
 
+    try {
+        auto val = JsonValue(ValueType::JSON_NUM, "flapdrol");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument (stod)";
+    }
+    MY_CATCH("stod", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_BOOL, "1");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_BOOL, "false");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_STRING, "test");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_STRING);
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_ARRAY, "array");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_ARRAY);
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_OBJ, "obj");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_OBJ);
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NULL, "null");
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
+
+    try {
+        auto val = JsonValue(ValueType::JSON_NULL);
+        val.getNumberValue();
+        FAIL() << "Expected std::invalid_argument";
+    }
+    MY_CATCH("Invalid type for: JsonNumber", std::invalid_argument);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
