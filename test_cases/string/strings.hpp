@@ -1,0 +1,7 @@
+#ifndef JSONPARSER_STRINGS_HPP
+#define JSONPARSER_STRINGS_HPP
+
+#include "oneVar.h"
+
+
+#endif //JSONPARSER_STRINGS_HPP

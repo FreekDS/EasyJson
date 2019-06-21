@@ -47,3 +47,5 @@ add_executable(EasyJson
         )
 
 TARGET_LINK_LIBRARIES(EasyJson gtest_main)
+
+FILE(COPY ./test_input/ DESTINATION ${CMAKE_BINARY_DIR}/test_input/)

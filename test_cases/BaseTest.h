@@ -5,11 +5,13 @@
 #include "../jsonParser.h"
 
 #define MY_CATCH(expected, exceptionType) \
-catch(std::invalid_argument& e) { \
+catch(exceptionType& e) { \
     EXPECT_STREQ(e.what(), expected); \
 }catch(...){ \
     FAIL() << "Expected " << #exceptionType; \
 }
+
+#define TEST_PATH "./test_input/"
 
 struct ParserTests : public ::testing::Test {
     JsonParser* parser;
@@ -18,6 +20,11 @@ struct ParserTests : public ::testing::Test {
         delete parser;
         parser = nullptr;
     }
+
+    void skipWhiteSpaceWrapper(std::string& line) {
+
+    }
+
 };
 
 struct ValueTests : public ::testing::Test{};
