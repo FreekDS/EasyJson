@@ -191,6 +191,14 @@ public:
      * @return Reference to the JsonValue associated with key in the JsonObject.
      */
     JsonValue& operator[](const std::string& key);
+
+    /**
+     * Check wheter a key exists if the ValueType is JsonObject.
+     * @throw invalid argument if the type is not JsonObject
+     * @param key Key to check
+     * @return True if the key can be found
+     */
+    bool hasKey(const std::string& key);
 };
 
 /**
@@ -253,6 +261,13 @@ public:
      * @param file_name Name of the file to parse.
      */
     explicit JsonParser(const std::string& file_name);
+
+    /**
+     * Check whether a key exists.
+     * @param key Key to check
+     * @return True if the key exists
+     */
+    bool hasKey(const std::string& key);
 
     /**
      * Destructor for the JsonParser.

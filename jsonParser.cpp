@@ -178,7 +178,7 @@ void JsonValue::addToObject(JsonValue* value, const std::string& key)
 {
     if (!isObject())
         throw std::invalid_argument("Object is not of type JsonObject");
-    if (object_value->count(key)) {
+    if (hasKey(key)) {
         throw std::invalid_argument("Duplicate key: '"+key+"'");
     }
     (*object_value)[key] = value;
@@ -208,7 +208,7 @@ JsonValue& JsonValue::operator[](const std::string& key)
     if (type!=ValueType::JSON_OBJ)
         throw std::invalid_argument("Object is not of type JsonObject");
 
-    if (object_value->count(key)==0)
+    if (hasKey(key)==0)
         throw std::invalid_argument("Did not find key '"+key+"' in JsonObject");
 
     return *((*object_value)[key]);
@@ -287,6 +287,13 @@ JsonValue::JsonValue(const JsonValue& other)
         break;
     }
 
+}
+
+bool JsonValue::hasKey(const std::string& key)
+{
+    if(!isObject())
+        throw std::invalid_argument("JsonValue is not of type 'JsonObject'");
+    return getObjectValue()->count(key) > 0;
 }
 
 void JsonParser::skipWhiteSpace(std::string& line)
@@ -681,6 +688,8 @@ JsonParser::JsonParser()
 
 JsonValue& JsonParser::operator[](const std::string& key)
 {
+    if(!hasKey(key))
+        throw std::invalid_argument("There is no such key '" + key + "'");
     return *(root[key]);
 }
 
@@ -738,5 +747,10 @@ JsonParser::JsonParser(const std::string& file_name)
         :JsonParser()
 {
     parse(file_name);
+}
+
+bool JsonParser::hasKey(const std::string& key)
+{
+    return root.count(key) > 0;
 }
 
