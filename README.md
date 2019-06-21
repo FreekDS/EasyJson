@@ -1,4 +1,4 @@
-# EasyJson
+# EasyJson | [![Build Status](https://travis-ci.com/FreekDS/EasyJson.svg?token=oRQDqQmpkBiWswbK3qg5&branch=master)](https://travis-ci.com/FreekDS/EasyJson)
 A simple JsonParser. Read only.
 
 ## Readme content
