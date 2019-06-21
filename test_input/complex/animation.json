@@ -1,0 +1,41 @@
+{
+	"file": "animation.png",
+	"tile_size": {
+		"width": 32,
+		"height": 32
+	},
+	"border": 1,
+	"type": "animation",
+	"number_of_animations": 10,
+	"animations": [
+		{
+			"id": 0,
+			"name": "walk_right",
+			"loop": true,
+			"row_in_sheet": 3,
+			"sprite_count": 8,
+			"pingpong": false,
+			"frame_time": 0.2
+		},
+		{
+			"id": 1,
+			"row_in_sheet": 3,
+			"name": "idle_front",
+			"sprite_count": 8,
+			"repeat": true,
+			"pingpong": false,
+			"frame_time": 0.8,
+			"default": true
+		}
+	],
+	"transitions": [
+		{
+			"id": 0,
+			"name": "idle->walk_right",
+			"from": "idle_front",
+			"to": "walk_right",
+			"blend": false,
+			"wait_end": false
+		}
+	]
+}

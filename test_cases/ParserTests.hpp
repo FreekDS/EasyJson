@@ -3,5 +3,6 @@
 
 #include "basics/ValueTypeTests.h"
 #include "string/strings.hpp"
+#include "complex/complexExamples.h"
 
 #endif //JSONPARSER_PARSERTESTS_HPP
