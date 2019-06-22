@@ -22,7 +22,7 @@
 			"row_in_sheet": 3,
 			"name": "idle_front",
 			"sprite_count": 8,
-			"repeat": true,
+			"loop": true,
 			"pingpong": false,
 			"frame_time": 0.8,
 			"default": true

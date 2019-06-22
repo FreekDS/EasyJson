@@ -10,31 +10,30 @@ TEST_F(ParserTests, AnimationExample) // NOLINT
     json.parse(file);
 
     EXPECT_STREQ(json["file"].getStringValue().c_str(), "animation.png");
-    ASSERT_EQ(json["tile_size"].getObjectValue()->size(), 2);
+    ASSERT_EQ(json["tile_size"].getObjectValue().size(), 2);
     EXPECT_EQ(json["tile_size"]["width"].getNumberValue(), 32);
     EXPECT_EQ(json["tile_size"]["height"].getNumberValue(), 32);
     EXPECT_TRUE(json["border"].isNumber());
     EXPECT_EQ(json["border"].getNumberValue(), 1);
     EXPECT_STREQ(json["type"].getStringValue().c_str(), "animation");
     ASSERT_TRUE(json["animations"].isArray());
-    ASSERT_EQ(json["animations"].getArrayValue()->size(), 2);
+    ASSERT_EQ(json["animations"].getArrayValue().size(), 2);
 
-    // TODO Change pointer to reference
-    JsonArray& array = *json["animations"].getArrayValue();
+    JsonArray& array = json["animations"].getArrayValue();
     {
-        JsonObject& obj = *array[0]->getObjectValue();
+        JsonObject& obj = array[0]->getObjectValue();
 
-        EXPECT_STREQ(obj["name"]->getStringValue().c_str(), "walk_right");
-        EXPECT_TRUE(obj["loop"]->getBoolValue());
-        EXPECT_FALSE(obj["pingpong"]->getBoolValue());
-        EXPECT_EQ(obj["frametime"]->getNumberValue(), 0.2);
+        EXPECT_STREQ(obj["name"].getStringValue().c_str(), "walk_right");
+        EXPECT_TRUE(obj["loop"].getBoolValue());
+        EXPECT_FALSE(obj["pingpong"].getBoolValue());
+        EXPECT_EQ(obj["frame_time"].getNumberValue(), 0.2);
     }
     {
-        JsonObject& obj = *array[1]->getObjectValue();
-        EXPECT_STREQ(obj["name"]->getStringValue().c_str(), "idle_front");
-        EXPECT_TRUE(obj["loop"]->getBoolValue());
-        EXPECT_FALSE(obj["pingpong"]->getBoolValue());
-        EXPECT_EQ(obj["frametime"]->getNumberValue(), 0.8);
+        JsonObject& obj = array[1]->getObjectValue();
+        EXPECT_STREQ(obj["name"].getStringValue().c_str(), "idle_front");
+        EXPECT_TRUE(obj["loop"].getBoolValue());
+        EXPECT_FALSE(obj["pingpong"].getBoolValue());
+        EXPECT_EQ(obj["frame_time"].getNumberValue(), 0.8);
     }
 }
 

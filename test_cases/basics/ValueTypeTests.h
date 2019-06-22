@@ -330,13 +330,13 @@ TEST_F(ValueTests, ArrayValidAccessMethods) // NOLINT(cert-err58-cpp)
 {
     auto val = JsonValue(ValueType::JSON_ARRAY);
     val.addToArray(new JsonValue(ValueType::JSON_BOOL, "true"));
-    ASSERT_EQ(val.getArrayValue()->size(), 1);
-    EXPECT_TRUE(val.getArrayValue()->front()->getBoolValue());
+    ASSERT_EQ(val.getArrayValue().size(), 1);
+    EXPECT_TRUE(val.getArrayValue().front()->getBoolValue());
     val.addToArray(new JsonValue(ValueType::JSON_BOOL, "false"));
-    ASSERT_EQ(val.getArrayValue()->size(), 2);
-    EXPECT_FALSE(val.getArrayValue()->back()->getBoolValue());
+    ASSERT_EQ(val.getArrayValue().size(), 2);
+    EXPECT_FALSE(val.getArrayValue().back()->getBoolValue());
     val.addToArray(new JsonValue(ValueType::JSON_NUM, "2"));
-    ASSERT_EQ(val.getArrayValue()->size(), 3);
+    ASSERT_EQ(val.getArrayValue().size(), 3);
     EXPECT_TRUE(val[0].getBoolValue());
     EXPECT_FALSE(val[1].getBoolValue());
     EXPECT_EQ(val[2].getNumberValue(), 2);
@@ -505,14 +505,14 @@ TEST_F(ValueTests, ObjectValidAccessMethods)  // NOLINT(cert-err58-cpp)
 {
     auto val = JsonValue(ValueType::JSON_OBJ);
     val.addToObject(new JsonValue(ValueType::JSON_BOOL, "true"), "key1");
-    ASSERT_EQ(val.getObjectValue()->size(), 1);
-    EXPECT_TRUE(val.getObjectValue()->at("key1")->getBoolValue());
+    ASSERT_EQ(val.getObjectValue().size(), 1);
+    EXPECT_TRUE(val.getObjectValue().at("key1")->getBoolValue());
     val.addToObject(new JsonValue(ValueType::JSON_BOOL, "false"), "key2");
-    ASSERT_EQ(val.getObjectValue()->size(), 2);
-    EXPECT_FALSE(val.getObjectValue()->at("key2")->getBoolValue());
+    ASSERT_EQ(val.getObjectValue().size(), 2);
+    EXPECT_FALSE(val.getObjectValue().at("key2")->getBoolValue());
     val.addToObject(new JsonValue(ValueType::JSON_NUM, "-6"), "key3");
-    ASSERT_EQ(val.getObjectValue()->size(), 3);
-    EXPECT_EQ(val.getObjectValue()->at("key3")->getNumberValue(), -6);
+    ASSERT_EQ(val.getObjectValue().size(), 3);
+    EXPECT_EQ(val.getObjectValue().at("key3")->getNumberValue(), -6);
 
     EXPECT_TRUE(val["key1"].getBoolValue());
     EXPECT_FALSE(val["key2"].getBoolValue());
