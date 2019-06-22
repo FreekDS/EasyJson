@@ -6,14 +6,22 @@
 #include <vector>
 #include <stack>
 
-//! Forward declaration to make using statements valid
+// Forward declaration to make using statements valid
 class JsonValue;
 
 /**
  * Some easy names for 'larger' data structures
  */
-using JsonObject = std::map<std::string, JsonValue*>;
+//using JsonObject = std::map<std::string, JsonValue*>;
 using JsonArray = std::vector<JsonValue*>;
+
+
+class JsonObject : public std::map<std::string, JsonValue*>{
+public:
+    JsonValue& operator[](const std::string& key);
+    void add(JsonValue* value, const std::string& key);
+};
+
 
 /**
  * Possible JSON Values

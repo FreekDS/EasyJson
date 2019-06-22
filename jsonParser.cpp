@@ -37,6 +37,8 @@ bool JsonValue::isObject() const
 
 bool JsonValue::isNumber() const
 {
+    if(this ==nullptr)
+        std::cerr << "foutief!";
     return type==ValueType::JSON_NUM;
 }
 
@@ -181,7 +183,7 @@ void JsonValue::addToObject(JsonValue* value, const std::string& key)
     if (hasKey(key)) {
         throw std::invalid_argument("Duplicate key: '"+key+"'");
     }
-    (*object_value)[key] = value;
+    (*object_value).add(value, key);
 }
 
 JsonValue& JsonValue::operator[](int index)
@@ -211,7 +213,7 @@ JsonValue& JsonValue::operator[](const std::string& key)
     if (hasKey(key)==0)
         throw std::invalid_argument("Did not find key '"+key+"' in JsonObject");
 
-    return *((*object_value)[key]);
+    return (*object_value)[key];
 }
 
 JsonValue::JsonValue(const ValueType& vt)
@@ -300,7 +302,7 @@ void JsonParser::skipWhiteSpace(std::string& line)
 {
     if (line.empty())
         return;
-    while (line.front()==' ')
+    while (line.front()==' ' || line.front() == '\t' || line.front() == '\n')
         line.erase(0, 1);
 }
 
@@ -362,14 +364,17 @@ void JsonParser::parse(const std::string& file_name)
                 }
 
                 if (!unfinishedObjects.empty()) {
+                    line.erase(0,1);
                     auto top = unfinishedObjects.top();
                     unfinishedObjects.pop();
                     if (unfinishedObjects.empty())
-                        root[top.first] = top.second;
+                        root.add(top.second, top.first);
+//                        root[top.first] = top.second;
                     else {
                         auto attachTo = unfinishedObjects.top().second;
                         attachTo->addToObject(top.second, top.first);
                     }
+                    canCreateValue = expectChar(line, ',');
                 }
                 break;
             case '[':
@@ -389,7 +394,8 @@ void JsonParser::parse(const std::string& file_name)
                     parseState.pop();
                     unfinishedArrays.pop();
                     if (unfinishedArrays.empty()) {
-                        root[top.first] = top.second;
+                        root.add(top.second, top.first);
+//                        root[top.first] = top.second;
                     }
                     else {
                         auto addTo = unfinishedArrays.top().second;
@@ -471,7 +477,8 @@ void JsonParser::parse(const std::string& file_name)
                         break;
                     }
                     case NORMAL:
-                        root[key] = jsonVal;
+                        root.add(jsonVal, key);
+//                        root[key] = jsonVal;
                         break;
                     }
                     skipWhiteSpace(line);
@@ -491,7 +498,8 @@ void JsonParser::parse(const std::string& file_name)
                             break;
                         }
                         case NORMAL:
-                            root[key] = jsonVal;
+                            root.add(jsonVal, key);
+//                            root[key] = jsonVal;
                             break;
                         }
                         // Remove 'true'
@@ -521,7 +529,8 @@ void JsonParser::parse(const std::string& file_name)
                             break;
                         }
                         case NORMAL:
-                            root[key] = jsonVal;
+                            root.add(jsonVal, key);
+//                            root[key] = jsonVal;
                             break;
                         }
                         // Remove 'false'
@@ -559,7 +568,8 @@ void JsonParser::parse(const std::string& file_name)
                     parseState.pop();
                     unfinishedObjects.pop();
                     if (unfinishedObjects.empty())
-                        root[top.first] = top.second;
+                        root.add(top.second, top.first);
+//                        root[top.first] = top.second;
                     else {
                         auto attachTo = unfinishedObjects.top().second;
                         attachTo->addToObject(top.second, top.first);
@@ -576,7 +586,8 @@ void JsonParser::parse(const std::string& file_name)
                     unfinishedArrays.pop();
                     parseState.pop();
                     if (unfinishedArrays.empty())
-                        root[top.first] = top.second;
+                        root.add(top.second, top.first);
+//                        root[top.first] = top.second;
                     else {
                         auto attachTo = unfinishedArrays.top().second;
                         attachTo->addToArray(top.second);
@@ -604,7 +615,8 @@ void JsonParser::parse(const std::string& file_name)
                             break;
                         }
                         case NORMAL:
-                            root[key] = jsonVal;
+                            root.add(jsonVal, key);
+//                            root[key] = jsonVal;
                             break;
                         }
                         canCreateValue = expectChar(line, ',');
@@ -690,7 +702,7 @@ JsonValue& JsonParser::operator[](const std::string& key)
 {
     if(!hasKey(key))
         throw std::invalid_argument("There is no such key '" + key + "'");
-    return *(root[key]);
+    return root[key];
 }
 
 std::string JsonParser::readNumberValue(std::string& line)
@@ -737,7 +749,7 @@ void JsonParser::clear()
     parseState.push(PARSE_STATE::NORMAL);
     canCreateValue = true;
     for (auto it = root.begin(); it!=root.end();) {
-        delete root[it->first];
+        delete it->second;
         it = root.erase(it);
     }
     root.clear();
@@ -754,3 +766,16 @@ bool JsonParser::hasKey(const std::string& key)
     return root.count(key) > 0;
 }
 
+JsonValue& JsonObject::operator[](const std::string& k)
+{
+    if(count(k) == 0)
+        throw std::invalid_argument("There is no such key '" + k + "'");
+    return *at(k);
+}
+
+void JsonObject::add(JsonValue* value, const std::string& key)
+{
+    if(count(key)!=0)
+        throw std::invalid_argument("There already is a key '" + key + "'");
+    insert({key, value});
+}
