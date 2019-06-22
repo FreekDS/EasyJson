@@ -70,18 +70,18 @@ std::string JsonValue::getStringValue() const
     return *string_value;
 }
 
-JsonArray* JsonValue::getArrayValue() const
+JsonArray& JsonValue::getArrayValue() const
 {
     if (!isArray())
         throw std::invalid_argument("Invalid type for: JsonArray");
-    return array_value;
+    return *array_value;
 }
 
-JsonObject* JsonValue::getObjectValue() const
+JsonObject& JsonValue::getObjectValue() const
 {
     if (!isObject())
         throw std::invalid_argument("Invalid type for: JsonObject");
-    return object_value;
+    return *object_value;
 }
 
 JsonValue::JsonValue()
@@ -293,7 +293,7 @@ bool JsonValue::hasKey(const std::string& key)
 {
     if(!isObject())
         throw std::invalid_argument("JsonValue is not of type 'JsonObject'");
-    return getObjectValue()->count(key) > 0;
+    return object_value->count(key) > 0;
 }
 
 void JsonParser::skipWhiteSpace(std::string& line)

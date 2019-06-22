@@ -149,14 +149,14 @@ public:
      * @throw invalid argument if the type is not JsonArray.
      * @return the entire array object of the JsonValue (std::vector semantics)
      */
-    JsonArray* getArrayValue() const;
+    JsonArray& getArrayValue() const;
 
     /**
      * Get the entire object value of the JsonValue.
      * @throw invalid argument if the type is not JsonObject.
      * @return the entire array object of the JsonValue (std::map semantics)
      */
-    JsonObject* getObjectValue() const;
+    JsonObject& getObjectValue() const;
 
     /**
      * Adds a value to the array value.
