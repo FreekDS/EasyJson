@@ -40,12 +40,14 @@ endif()
 
 ####################################################################
 
-add_executable(EasyJson
+add_executable(tests
         main.cpp
         jsonParser.h
         jsonParser.cpp
         )
 
-TARGET_LINK_LIBRARIES(EasyJson gtest_main)
+add_library(EasyJson jsonParser.h jsonParser.cpp)
+
+TARGET_LINK_LIBRARIES(tests gtest_main)
 
 FILE(COPY ./test_input/ DESTINATION ${CMAKE_BINARY_DIR}/test_input/)

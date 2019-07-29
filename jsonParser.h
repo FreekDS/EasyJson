@@ -15,10 +15,24 @@ class JsonValue;
 //using JsonObject = std::map<std::string, JsonValue*>;
 using JsonArray = std::vector<JsonValue*>;
 
-
+/**
+ * Represents a JSON object
+ */
 class JsonObject : public std::map<std::string, JsonValue*>{
 public:
+    /**
+     * IMPORTANT: this function hides the basic operator[]() of the std::map container!
+     * That means that adding to the map is no longer possible through operator[](key) = value
+     * @param key Key to get the value for
+     * @return Reference to the JsonObject
+     */
     JsonValue& operator[](const std::string& key);
+
+    /**
+     * Add a value to the map.
+     * @param value
+     * @param key
+     */
     void add(JsonValue* value, const std::string& key);
 };
 
