@@ -344,6 +344,24 @@ void JsonParser::parse(const std::string& file_name)
                     parseState.push(OBJECT);
                     break;
                 }
+            case 'n': {
+                if (parseState.top()==ARRAY) {
+                    if (strcmp(line.substr(0, 5).c_str(), "null")==0) {
+                        JsonValue* jsonVal = new JsonValue(ValueType::JSON_NULL);
+                        auto addTo = unfinishedArrays.top().second;
+                        addTo->addToArray(jsonVal);
+                        // remove 'null'
+                        std::string s = "null";
+                        std::string::size_type i = line.find(s);
+                        if (i!=std::string::npos) {
+                            line.erase(i, s.length());
+                        }
+                        skipWhiteSpace(line);
+                        canCreateValue = expectChar(line, ',');
+                    }
+                }
+                break;
+            }
             case '}':
                 m_curlyCount--;
                 if (parseState.top()==OBJECT)
@@ -546,6 +564,37 @@ void JsonParser::parse(const std::string& file_name)
                         canCreateValue = expectChar(line, ',');
                         break;
                     }
+                }
+                case 'n': {
+                    if (strcmp(line.substr(0, 5).c_str(), "null")==0) {
+                        JsonValue* jsonVal = new JsonValue(ValueType::JSON_NULL);
+                        switch (parseState.top()) {
+                        case ARRAY: {
+                            break;
+                        }
+                        case OBJECT: {
+                            auto obj = unfinishedObjects.top().second;
+                            obj->addToObject(jsonVal, key);
+                            break;
+                        }
+                        case NORMAL:
+                            root.add(jsonVal, key);
+                            break;
+                        }
+                        // remove 'null'
+                        std::string s = "null";
+                        std::string::size_type i = line.find(s);
+                        if (i!=std::string::npos) {
+                            line.erase(i, s.length());
+                        }
+                        skipWhiteSpace(line);
+                        if (!line.empty() && line[0]!=',' && line[0]!='\n' && line[0]!=' ') {
+                            std::string c(1, line[0]);
+                            throw ParseError(currentLine, line, "Unexpected token: '"+c+"'");
+                        }
+                        canCreateValue = expectChar(line, ',');
+                    }
+                    break;
                 }
                 case '[': {
                     m_straightCount++;
