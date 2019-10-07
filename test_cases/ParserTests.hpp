@@ -4,5 +4,7 @@
 #include "basics/ValueTypeTests.h"
 #include "string/strings.hpp"
 #include "complex/complexExamples.h"
+#include "null/null.hpp"
+#include "array/arrays.hpp"
 
 #endif //JSONPARSER_PARSERTESTS_HPP

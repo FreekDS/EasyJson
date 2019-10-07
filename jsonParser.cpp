@@ -298,6 +298,14 @@ bool JsonValue::hasKey(const std::string& key)
     return object_value->count(key) > 0;
 }
 
+JsonObject* JsonValue::getNullValue() const
+{
+    if(isNull())
+        return nullptr;
+    else
+        throw std::invalid_argument("JsonValue is not of type JsonNull");
+}
+
 void JsonParser::skipWhiteSpace(std::string& line)
 {
     if (line.empty())
@@ -346,7 +354,7 @@ void JsonParser::parse(const std::string& file_name)
                 }
             case 'n': {
                 if (parseState.top()==ARRAY) {
-                    if (strcmp(line.substr(0, 5).c_str(), "null")==0) {
+                    if (strcmp(line.substr(0, 4).c_str(), "null")==0) {
                         JsonValue* jsonVal = new JsonValue(ValueType::JSON_NULL);
                         auto addTo = unfinishedArrays.top().second;
                         addTo->addToArray(jsonVal);
@@ -358,6 +366,7 @@ void JsonParser::parse(const std::string& file_name)
                         }
                         skipWhiteSpace(line);
                         canCreateValue = expectChar(line, ',');
+                        continue;
                     }
                 }
                 break;
@@ -566,7 +575,7 @@ void JsonParser::parse(const std::string& file_name)
                     }
                 }
                 case 'n': {
-                    if (strcmp(line.substr(0, 5).c_str(), "null")==0) {
+                    if (strcmp(line.substr(0, 45).c_str(), "null")==0) {
                         JsonValue* jsonVal = new JsonValue(ValueType::JSON_NULL);
                         switch (parseState.top()) {
                         case ARRAY: {

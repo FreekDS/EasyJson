@@ -167,6 +167,12 @@ public:
     std::string getStringValue() const;
 
     /**
+     * Get the null value of the JsonValue
+     * @return nullptr of type JsonObject
+     */
+    JsonObject* getNullValue() const;
+
+    /**
      * Get the entire array object of the JsonValue.
      * @throw invalid argument if the type is not JsonArray.
      * @return the entire array object of the JsonValue (std::vector semantics)
